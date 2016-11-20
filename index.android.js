@@ -49,6 +49,11 @@ export class BarChoices extends Component {
   }
 
   render() {
+    const self = this
+    setTimeout(() => {
+      self.listRetrieve()
+    }, 1000);
+
     mapped = this.state.list.map(item =>
       <RowItem
         styles={styles.main}
@@ -93,15 +98,34 @@ export class BarChoices extends Component {
 
 class RowItem extends Component {
   render() {
+    item = this.props.item
+    score = Math.floor((item.person_count / globalItemTotalPeople) * 100)
+
       return (
         <Row style={styles.row}>
-          <Col size={3}>
+          <Col size={3} >
             <View>
-              <Text style={styles.header}>{this.props.item.name}</Text>
+              <Text style={styles.header}>
+              {this.props.item.name}
+              </Text>
               <Text>{this.props.item.address}</Text>
             </View>
           </Col>
-          <Col size={1}>
+          <Col size={1} >
+            <Text style={{
+              color: "#ff8a38",
+              fontSize: 25,
+              fontWeight: 'bold',
+              margin: 5,
+              textAlignVertical: 'center',
+              textAlign: 'center',
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+          }}>{score}</Text>
+          </Col>
+          <Col size={1} >
             <View style={styles.buttonColumn}>
               <Button
                 title={"Info"}
@@ -175,7 +199,6 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderWidth: .75,
     margin: 10,
-    height: 100,
     borderColor: '#3a3f47'
   },
 
@@ -193,7 +216,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    fontSize: 30,
+    fontSize: 25,
   }
 });
 

@@ -20,10 +20,5 @@ public class MainActivity extends ReactActivity {
         return "BarCrawlApp";
     }
 
-    @Override
-  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-      RNPermissionsPackage.onRequestPermissionsResult(requestCode, permissions, grantResults); // very important event callback
-      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-  }
 
 }
