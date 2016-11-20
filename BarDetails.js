@@ -11,24 +11,16 @@ import {
 } from 'react-native';
 import BarCrawlApp from './index.android.js'
 
-export default class BarDetails extends Component{
+export default class BarDetails extends Component {
   setNativeProps(nativeProps) {
     this._root.setNativeProps(nativeProps);
-  }
-
-  render() {
-    return (
-      <View ref={component => this._root = component} {...this.props}>
-        <Text>{this.props.barDetails}</Text>
-      </View>
-    )
   }
 
   render(){
     return(
       <View>
-        <Text style={styles.header}>{this.props.barDetails.name}</Text>
-        <Text style={textAlign='center'}>{this.props.barDetails.address}</Text>
+        <Text style={styles.header}>{this.props.item.name}</Text>
+        <Text style={styles.address}>{this.props.item.address}</Text>
       </View>
     )
   }
@@ -55,5 +47,9 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 30,
     textAlign: 'center'
+  },
+  address:{
+    fontSize:15,
+    textAlign:'center'
   }
 });

@@ -15,7 +15,7 @@ import {
 import { barsFromLocation } from './backend-talker.js';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import BarDetails from "./BarDetails.js"
-var item;
+var item = "";
 
 var SCREEN_WIDTH = require('Dimensions').get('window').width;
 var BaseConfig = Navigator.SceneConfigs.FloatFromRight;
@@ -106,7 +106,7 @@ export class BarCrawlApp extends Component{
       case 0:
         return <BarChoices navigator={navigator} />
       case 1:
-        return <BarDetails navigator={navigator} barDetails = {item}/>
+        return <BarDetails navigator={navigator} item = {item}/>
    }
  }
 
