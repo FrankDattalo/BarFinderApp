@@ -3,6 +3,8 @@ package com.barcrawlapp;
 import android.app.Application;
 import android.util.Log;
 
+import com.burnweb.rnpermissions.RNPermissionsPackage;
+
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
