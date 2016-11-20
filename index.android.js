@@ -77,9 +77,10 @@ class RowItem extends Component {
             </View>
           </Col>
           <Col size={1}>
-            <View>
+            <View style={{}}>
               <Button
                 title={"Info"}
+                color="#2454a0"
                 containerStyle={{backgroundColor: "#2454a0"}}
                 onPress={this.handlePress.bind(this)}
               />
@@ -89,10 +90,9 @@ class RowItem extends Component {
       )
   }
 
-
   handlePress(){
     barName = this.props.item.name
-    this.props.navigator.push({id:1,})
+    this.props.navigator.push({ id:1, })
   }
 }
 
@@ -107,7 +107,7 @@ export class BarCrawlApp extends Component {
    }
 
    configureScene(route) {
-      if(route.index===0){
+      if(route.index === 0){
         return CustomBackSceneConfig;
       }else{
         return CustomSceneConfig;
