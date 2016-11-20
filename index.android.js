@@ -11,7 +11,7 @@ import {
   BackAndroid
 } from 'react-native';
 
-import { barsFromLocation } from './backend-talker.js';
+import { barsFromLocation, increaseCount } from './backend-talker.js';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import BarDetails from "./BarDetails.js";
 import BarNoneHeader from './header.js';
@@ -31,6 +31,7 @@ const CustomBackSceneConfig = Object.assign({},
 });
 
 var itemGlobal;
+var globalItemTotalPeople = 0;
 
 export class BarChoices extends Component {
 
@@ -50,6 +51,17 @@ export class BarChoices extends Component {
         item={item}
         navigator={this.props.navigator}/>)
 
+    globalItemTotalPeople = 0
+
+    this.state.list.forEach(item => {
+      parsed = parseInt(item.person_count)
+      if(isNaN(parsed)) {
+        parsed = 0
+      }
+
+      globalItemTotalPeople += parsed
+    })
+
     return (
       <View>
         <BarNoneHeader />
@@ -63,7 +75,10 @@ export class BarChoices extends Component {
   }
 
   componentDidMount() {
-    barsFromLocation(1, 1, list => this.setState({ list }) )
+    barsFromLocation(1, 1, list => {
+      this.setState({ list })
+      increaseCount(1, 1)
+    })
   }
 }
 
@@ -103,7 +118,7 @@ export class BarCrawlApp extends Component {
         case 0:
           return <BarChoices navigator={navigator} />
         case 1:
-          return <BarDetails navigator={navigator} item={itemGlobal} />
+          return <BarDetails navigator={navigator} item={itemGlobal} total={globalItemTotalPeople} />
      }
    }
 

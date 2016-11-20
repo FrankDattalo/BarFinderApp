@@ -14,10 +14,60 @@ export function api(query, callback) {
     .done();
 }
 
+export function addReview(id, hash, callback) {
+  hash.rating = hash.rating || 50
+  hash.crowdedness = hash.crowdedness || 50
+  hash.loudness = hash.loudness || 50
+
+  fetch(API_LOCATION + `/bars/review/${id}`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      rating: hash.rating,
+      crowdedness: hash.crowdedness,
+      loudness: hash.loudness,
+    })
+  })
+  .then((res) => {
+    return res.json()
+  })
+  .then((data) => {
+    callback(data)
+  })
+  .catch(error => {
+    console.error(error)
+  })
+  .done();
+}
+
+export function increaseCount(latitude, longitude) {
+  latitude = latitude || 0
+  longitude = longitude || 0
+
+  fetch(`${API_LOCATION}/bars/update-count`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      latitude: latitude,
+      longitude: longitude
+    })
+  })
+  .catch(error => {
+    console.error(error)
+  })
+  .done();
+}
+
 export function barsFromLocation(latitude, longitude, callback) {
   api(`bars?latitude=${latitude}&longitude=${longitude}`, (data) => {
     callback(data.bars);
   });
 }
 
-export default { barsFromLocation, api };
+export default { barsFromLocation, api, addReview, increaseCount };

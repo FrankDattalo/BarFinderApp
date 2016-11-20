@@ -5,7 +5,7 @@ export default class BarNoneHeader extends Component {
     render() {
       return (
         <ToolbarAndroid
-          title="Bar Nun"
+          title="Bar None"
           titleColor="#f9f9f9"
           style={{height: 50, backgroundColor: "#2454a0" }} />
       )
