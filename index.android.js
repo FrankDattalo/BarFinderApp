@@ -52,7 +52,7 @@ export class BarChoices extends Component {
     const self = this
     setTimeout(() => {
       self.listRetrieve()
-    }, 1000);
+    }, 30000);
 
     mapped = this.state.list.map(item =>
       <RowItem
