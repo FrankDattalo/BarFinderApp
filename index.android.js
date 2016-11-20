@@ -11,6 +11,8 @@ import {
   Text,
   View,
   ScrollView,
+  Button,
+  ToolbarAndroid,
 } from 'react-native';
 
 import { barsFromLocation } from './backend-talker.js';
@@ -31,9 +33,19 @@ export default class BarCrawlApp extends React.Component {
       <RowItem styles={styles.main} key={item.id} item={item} />)
 
     return (
-      <ScrollView style={styles.main}>
-        {mapped}
-      </ScrollView>
+      <View>
+        <ToolbarAndroid
+          title="Bar Nun"
+          titleColor="#f9f9f9"
+          style={{height: 50, backgroundColor: "#2454a0" }}/>
+        <View>
+          <Grid>
+            <ScrollView style={styles.main}>
+              {mapped}
+            </ScrollView>
+          </Grid>
+        </View>
+      </View>
     )
   }
 
@@ -49,12 +61,19 @@ export default class BarCrawlApp extends React.Component {
 class RowItem extends Component {
   render() {
       return (
-        <View style={styles.row}>
-          <View>
+        <Row style={styles.row}>
+          <Col size={3}>
             <Text style={styles.header}>{this.props.item.name}</Text>
-            <Text>{this.props.item.address} Rating: {this.props.item.rating}</Text>
-          </View>
-        </View>
+            <Text>{this.props.item.address}</Text>
+          </Col>
+          <Col size={1}>
+            <Row>
+              <Col style={{justifyContent: 'center'}}>
+                <Button title={"Info"} style={{backgroundColor: "#2454a0"}} />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
       )
   }
 }
