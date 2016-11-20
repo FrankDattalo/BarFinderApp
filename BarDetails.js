@@ -10,6 +10,7 @@ import {
   ToolbarAndroid,
   Button,
   ScrollView,
+  Alert,
 } from 'react-native';
 import BarCrawlApp from './index.android.js';
 import { Col, Row, Grid } from "react-native-easy-grid";
@@ -24,6 +25,25 @@ export default class BarDetails extends Component {
 
   setNativeProps(nativeProps) {
     this._root.setNativeProps(nativeProps);
+  }
+
+  setRatingValue(rating) {
+    this.setState({ rating })
+  }
+
+  setLoudnessValue(loudness) {
+    this.setState({ loudness })
+  }
+
+  setCrowdednessValue(crowdedness) {
+    this.setState({ crowdedness })
+  }
+
+  submitReview() {
+    addReview(this.props.item.id, this.state, (result) => {
+      Alert.alert('Review Saved!')
+      this.props.navigator.pop()
+    })
   }
 
   render() {
@@ -86,10 +106,12 @@ export default class BarDetails extends Component {
                   <Row>
                     <Col style={{margin: 5}}>
                       <Button color="#2454a0"
+                        onPress={() => this.setRatingValue(0)}
                         title="-" />
                     </Col>
                     <Col style={{margin: 5}}>
                       <Button color="#2454a0"
+                        onPress={() => this.setRatingValue(100)}
                         title="+" />
                     </Col>
                   </Row>
@@ -109,10 +131,12 @@ export default class BarDetails extends Component {
                   <Row>
                     <Col style={{margin: 5}}>
                       <Button color="#2454a0"
+                        onPress={() => this.setLoudnessValue(0)}
                         title="-" />
                     </Col>
                     <Col style={{margin: 5}}>
                       <Button color="#2454a0"
+                        onPress={() => this.setLoudnessValue(100)}
                         title="+" />
                     </Col>
                   </Row>
@@ -133,11 +157,13 @@ export default class BarDetails extends Component {
                     <Col style={{margin: 5}}>
                       <Button
                         color="#2454a0"
+                        onPress={() => this.setCrowdednessValue(0)}
                         title="-" />
                     </Col>
                     <Col style={{margin: 5}}>
                       <Button
                         color="#2454a0"
+                        onPress={() => this.setCrowdednessValue(100)}
                         title="+" />
                     </Col>
                   </Row>
@@ -146,7 +172,9 @@ export default class BarDetails extends Component {
 
               <Row>
                 <Col style={{margin: 5 }}>
-                  <Button color="#2454a0" title="Rate" />
+                  <Button color="#2454a0"
+                  onPress={this.submitReview.bind(this)}
+                  title="Rate" />
                 </Col>
               </Row>
 

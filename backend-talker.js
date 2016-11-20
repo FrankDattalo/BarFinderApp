@@ -50,9 +50,6 @@ export function addReview(id, hash, callback) {
       loudness: hash.loudness,
     })
   })
-  .then((res) => {
-    return res.json()
-  })
   .then((data) => {
     callback(data)
   })

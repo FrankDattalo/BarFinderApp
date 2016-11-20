@@ -49,6 +49,11 @@ export class BarChoices extends Component {
   }
 
   render() {
+    const self = this
+    setTimeout(() => {
+      self.listRetrieve()
+    }, 1000);
+
     mapped = this.state.list.map(item =>
       <RowItem
         styles={styles.main}
