@@ -19,7 +19,7 @@ export default class BarDetails extends Component{
   render() {
     return (
       <View ref={component => this._root = component} {...this.props}>
-        <Text>{this.props.name}</Text>
+        <Text>{this.props.barDetails}</Text>
       </View>
     )
   }
@@ -27,8 +27,33 @@ export default class BarDetails extends Component{
   render(){
     return(
       <View>
-        <Text>Is Good Bar</Text>
+        <Text style={styles.header}>{this.props.barDetails.name}</Text>
+        <Text style={textAlign='center'}>{this.props.barDetails.address}</Text>
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  main: {
+    flex: 1,
+    backgroundColor: '#F5FCFF',
+  },
+
+  row: {
+    paddingTop: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 5,
+    borderRadius: 0,
+    borderWidth: .75,
+    margin: 10,
+    borderColor: '#3a3f47',
+    flexDirection: 'row'
+  },
+
+  header: {
+    fontSize: 30,
+    textAlign: 'center'
+  }
+});
