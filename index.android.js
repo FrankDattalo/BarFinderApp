@@ -1,140 +1,199 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
   Text,
   View,
-  ListView,
-  TouchableWithoutFeedback,
+  ScrollView,
+  Button,
+  Alert,
   Navigator,
-  ToolbarAndroid
+  BackAndroid,
+  StatusBar,
 } from 'react-native';
-import Button from 'react-native-button'
-import { RadioButtons } from 'react-native-radio-buttons'
 
-var SCREEN_WIDTH = require('Dimensions').get('window').width;
-var BaseConfig = Navigator.SceneConfigs.FloatFromRight;
-var backConfig = Navigator.SceneConfigs.FloatFromLeft;
+import {
+  barsFromLocation,
+  increaseCount,
+  getOwnLatitudeAndLongitude
+} from './backend-talker.js';
+import { Col, Row, Grid } from "react-native-easy-grid";
+import BarDetails from "./BarDetails.js";
+import BarNoneHeader from './header.js';
 
-var CustomSceneConfig = Object.assign({}, BaseConfig, {
-  // A very tighly wound spring will make this transition fast
+const CustomSceneConfig = Object.assign({},
+    Navigator.SceneConfigs.FloatFromRight, {
+
   springTension: 100,
   springFriction: 1,
 });
 
-var CustomBackSceneConfig = Object.assign({}, backConfig, {
+const CustomBackSceneConfig = Object.assign({},
+    Navigator.SceneConfigs.FloatFromLeft, {
+
   springTension: -100,
   springFriction: 1,
 });
 
-var bars = ["Midway", "Toos", "Big Bar", "Lucky's"];
+var itemGlobal;
+var globalItemTotalPeople = 0;
 
-export default class BarCrawlApp extends Component {
+export class BarChoices extends Component {
 
-  // constructor(props) {
-  //   super(props);
-  //   const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-  //        this.state = {
-  //         dataSource: ds.cloneWithRows([
-  //           "1Bar", "2Bar", "Red Fish", "Blue Fish"
-  //         ])
-  //       };
-  //  }
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      list: []
+    }
+  }
+
+  render() {
+    mapped = this.state.list.map(item =>
+      <RowItem
+        styles={styles.main}
+        key={item.id}
+        item={item}
+        navigator={this.props.navigator}/>)
+
+    globalItemTotalPeople = 0
+
+    this.state.list.forEach(item => {
+      parsed = parseInt(item.person_count)
+      if(isNaN(parsed)) {
+        parsed = 0
+      }
+
+      globalItemTotalPeople += parsed
+    })
+
+    return (
+      <ScrollView>
+        { mapped }
+      </ScrollView>
+    )
+  }
+
+  listRetrieve() {
+    getOwnLatitudeAndLongitude(result => {
+      latitude = result.coords.latitude
+      longitude = result.coords.longitude
+
+      barsFromLocation(latitude, longitude, list => {
+        this.setState({ list })
+        increaseCount(latitude, longitude)
+      })
+    })
+  }
+
+  componentDidMount() {
+    this.listRetrieve()
+  }
+}
+
+class RowItem extends Component {
+  render() {
+      return (
+        <Row style={styles.row}>
+          <Col size={3}>
+            <View>
+              <Text style={styles.header}>{this.props.item.name}</Text>
+              <Text>{this.props.item.address}</Text>
+            </View>
+          </Col>
+          <Col size={1}>
+            <View style={styles.buttonColumn}>
+              <Button
+                title={"Info"}
+                color="#2454a0"
+                containerStyle={{backgroundColor: "#2454a0"}}
+                onPress={this.handlePress.bind(this)}
+              />
+            </View>
+          </Col>
+        </Row>
+      )
+  }
+
+  handlePress(){
+    itemGlobal = this.props.item
+    this.props.navigator.push({ id:1, })
+  }
+}
+
+export class BarCrawlApp extends Component {
+    renderScene(route, navigator) {
+      switch(route.id) {
+        case 0:
+          return <BarChoices navigator={navigator} />
+        case 1:
+          return <BarDetails navigator={navigator} item={itemGlobal} total={globalItemTotalPeople} />
+     }
+   }
+
+   configureScene(route) {
+      if(route.index === 0){
+        return CustomBackSceneConfig;
+      }else{
+        return CustomSceneConfig;
+      }
+  }
 
   render() {
     return (
-      <View style={styles.main}>
-        <ToolbarAndroid
-           
-           onIconClicked={() => this.drawer.openDrawer()}
-           style={styles.toolbar}
-           actions={[{title:'hey guys'}]} />
-        <View style={styles.container}>
-          <Text style={styles.welcome}>Bars Neer You</Text>
-          <RadioButtons
-            options={bars}
-            onSelection={ this.setSelectedOption}
-            selectedOption={this.selectedOption }
-            renderOption={ this.renderOption }
-            renderContainer={ this.renderContainer }/>
-        </View>
-      </View>
+      <Navigator
+        initialRoute={{id:0,}}
+        // Calls the function that helps the navigator choose which component to show based on route id.
+        renderScene={this.renderScene}
+        configureScene={this.configureScene}
+        ref={ nav => navigator = nav } />
     );
   }
+}
 
-  setSelectedOption(selectedOption){
-    this.setState({
-      selectedOption
-    });
+var navigator;
+
+BackAndroid.addEventListener('hardwareBackPress', () => {
+  if(navigator && navigator.getCurrentRoutes().length > 1) {
+    navigator.pop();
+    return true;
   }
-
- renderOption(option, selected, onSelect, index){
-   const style = selected ? { fontWeight: 'bold'} : {};
-   return (
-     <TouchableWithoutFeedback onPress={onSelect} key={index}>
-      <View>
-       <Text>{option}</Text>
-      </View>
-     </TouchableWithoutFeedback>
-   )
-
-}
-renderContainer(optionNodes){
-  return <View>{optionNodes}</View>;
-}
-
-onValueChange(key: string, value: string) {
-  const newState = {};
-  newState[key] = value;
-  this.setState(newState);
-}
-
-
-  _handleClick(){
-
-  }
-
-
-}
+  return false;
+});
 
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    alignItems: 'stretch',
     backgroundColor: '#F5FCFF',
   },
-  container: {
-    flex: 1,
+
+  row: {
+    paddingTop: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 5,
+    borderRadius: 0,
+    borderWidth: .75,
+    margin: 10,
+    height: 100,
+    borderColor: '#3a3f47'
+  },
+
+  button: {
+    width: 100
+  },
+
+  buttonColumn: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    flex: 1,
+    flexDirection: 'column',
+    borderColor: '#3a3f47',
+    flexDirection: 'row'
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  button:{
-    padding: 10,
-    height:45,
-    overflow:'hidden',
-    borderRadius:4,
-    backgroundColor:'#FF1A00'
-  },
-  btntxt:{
-    fontSize: 20,
-    color: 'white'
+
+  header: {
+    fontSize: 30,
   }
 });
 
