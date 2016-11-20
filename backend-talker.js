@@ -6,7 +6,7 @@ export function api(query, callback) {
       return res.json();
     })
     .then((data) => {
-      callback(data.bars);
+      callback(data);
     })
     .catch((error) => {
       console.error(error);
@@ -15,7 +15,9 @@ export function api(query, callback) {
 }
 
 export function barsFromLocation(latitude, longitude, callback) {
-  api(`bars?latitude=${latitude}&longitude=${longitude}`, callback);
+  api(`bars?latitude=${latitude}&longitude=${longitude}`, (data) => {
+    callback(data.bars);
+  });
 }
 
 export default { barsFromLocation, api };

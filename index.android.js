@@ -10,62 +10,75 @@ import {
   StyleSheet,
   Text,
   View,
-  ListView,
-  TouchableWithoutFeedback,
-  Navigator,
-  ToolbarAndroid
+  ScrollView,
 } from 'react-native';
-import Button from 'react-native-button'
-import { RadioButtons } from 'react-native-radio-buttons'
 
+import { barsFromLocation } from './backend-talker.js';
+import { Col, Row, Grid } from "react-native-easy-grid";
 
+export default class BarCrawlApp extends React.Component {
 
-export default class BarCrawlApp extends Component {
+  constructor(props) {
+    super(props)
 
-
-
-  render() {
-    return (
-      <View style={styles.main}>
-        <Text>Hello World</Text>
-      </View>
-    );
+    this.state = {
+      list: []
+    }
   }
 
+  render() {
+    mapped = this.state.list.map(item =>
+      <RowItem styles={styles.main} key={item.id} item={item} />)
+
+    return (
+      <ScrollView style={styles.main}>
+        {mapped}
+      </ScrollView>
+    )
+  }
+
+  componentDidMount() {
+    barsFromLocation(1, 1, (bars) => {
+      this.setState({
+        list: bars
+      })
+    })
+  }
+}
+
+class RowItem extends Component {
+  render() {
+      return (
+        <View style={styles.row}>
+          <View>
+            <Text style={styles.header}>{this.props.item.name}</Text>
+            <Text>{this.props.item.address} Rating: {this.props.item.rating}</Text>
+          </View>
+        </View>
+      )
+  }
 }
 
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    alignItems: 'stretch',
     backgroundColor: '#F5FCFF',
   },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
+
+  row: {
+    paddingTop: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 5,
+    borderRadius: 0,
+    borderWidth: .75,
     margin: 10,
+    borderColor: '#3a3f47',
+    flexDirection: 'row'
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  button:{
-    padding: 10,
-    height:45,
-    overflow:'hidden',
-    borderRadius:4,
-    backgroundColor:'#FF1A00'
-  },
-  btntxt:{
-    fontSize: 20,
-    color: 'white'
+
+  header: {
+    fontSize: 30,
   }
 });
 
