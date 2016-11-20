@@ -21,6 +21,11 @@ export default class BarDetails extends Component {
 
   constructor(props) {
     super(props)
+    this.state={
+      isDisabledRating: false,
+      isDisabledLoudness: false,
+      isDisabledCrowdedness:false
+    }
   }
 
   setNativeProps(nativeProps) {
@@ -28,18 +33,28 @@ export default class BarDetails extends Component {
   }
 
   setRatingValue(rating) {
+    this.setState({
+      isDisabledRating: true
+    })
     this.setState({ rating })
   }
 
   setLoudnessValue(loudness) {
+    this.setState({
+      isDisabledLoudness: true
+    })
     this.setState({ loudness })
   }
 
   setCrowdednessValue(crowdedness) {
+    this.setState({
+      isDisabledCrowdedness: true
+    })
     this.setState({ crowdedness })
   }
 
   submitReview() {
+    this.disable=true;
     addReview(this.props.item.id, this.state, (result) => {
       Alert.alert('Review Saved!')
       this.props.navigator.pop()
@@ -106,11 +121,13 @@ export default class BarDetails extends Component {
                   <Row>
                     <Col style={{margin: 5}}>
                       <Button color="#2454a0"
+                        disabled={this.state.isDisabledRating}
                         onPress={() => this.setRatingValue(0)}
                         title="-" />
                     </Col>
                     <Col style={{margin: 5}}>
                       <Button color="#2454a0"
+                        disabled={this.state.isDisabledRating}
                         onPress={() => this.setRatingValue(100)}
                         title="+" />
                     </Col>
@@ -131,11 +148,15 @@ export default class BarDetails extends Component {
                   <Row>
                     <Col style={{margin: 5}}>
                       <Button color="#2454a0"
+                        disabled={this.state.isDisabledLoudness}
+                        styleDisabled={{color: 'gray'}}
                         onPress={() => this.setLoudnessValue(0)}
                         title="-" />
                     </Col>
                     <Col style={{margin: 5}}>
                       <Button color="#2454a0"
+                        disabled={this.state.isDisabledLoudness}
+                        styleDisabled={{color: 'gray'}}
                         onPress={() => this.setLoudnessValue(100)}
                         title="+" />
                     </Col>
@@ -157,12 +178,16 @@ export default class BarDetails extends Component {
                     <Col style={{margin: 5}}>
                       <Button
                         color="#2454a0"
+                        disabled = {this.state.isDisabledCrowdedness}
+                        styleDisabled={{color: 'gray'}}
                         onPress={() => this.setCrowdednessValue(0)}
                         title="-" />
                     </Col>
                     <Col style={{margin: 5}}>
                       <Button
                         color="#2454a0"
+                        disabled = {this.state.isDisabledCrowdedness}
+                        styleDisabled={{color: 'gray'}}
                         onPress={() => this.setCrowdednessValue(100)}
                         title="+" />
                     </Col>
@@ -173,6 +198,7 @@ export default class BarDetails extends Component {
               <Row>
                 <Col style={{margin: 5 }}>
                   <Button color="#2454a0"
+                  styleDisabled={{color: 'gray'}}
                   onPress={this.submitReview.bind(this)}
                   title="Rate" />
                 </Col>
