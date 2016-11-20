@@ -19,7 +19,7 @@ import {
 import { barsFromLocation } from './backend-talker.js';
 import { Col, Row, Grid } from "react-native-easy-grid";
 
-export default class BarCrawlApp extends React.Component {
+export default class BarCrawlApp extends Component {
 
   constructor(props) {
     super(props)
@@ -40,39 +40,35 @@ export default class BarCrawlApp extends React.Component {
           titleColor="#f9f9f9"
           style={{height: 50, backgroundColor: "#2454a0" }} />
         <View>
-          <ScrollView>
-            { mapped }
-          </ScrollView>
+          <Grid>
+            <ScrollView>
+              {mapped}
+            </ScrollView>
+          </Grid>
         </View>
       </View>
     )
   }
 
   componentDidMount() {
-    barsFromLocation(1, 1, (list) => this.setState({ list }) )
+    barsFromLocation(1, 1, list => this.setState({ list }) )
   }
 }
 
 class RowItem extends Component {
   render() {
       return (
-          <Row style={styles.row}>
+          <Row>
             <Col size={3}>
-              <View>
-                <Text style={styles.header}>{this.props.item.name}</Text>
-                <Text>{this.props.item.address}</Text>
-              </View>
+              <Text style={styles.header}>{this.props.item.name}</Text>
+              <Text>{this.props.item.address}</Text>
             </Col>
-            <Col size={1} style={styles.buttonColumn}>
-              <View>
-                <Button
-                  title="Info"
-                  color="#2454a0"
-                  backgroundColor="#2454a0"
-                  style={styles.button}
-                  onPress={() => Alert.alert("button press") }
-                />
-              </View>
+            <Col size={1} >
+              <Button
+                title="Info"
+                color="#2454a0"
+                style={styles.button}
+                onPress={() => Alert.alert("button press") } />
             </Col>
           </Row>
       )
@@ -93,8 +89,8 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderWidth: .75,
     margin: 10,
-    borderColor: '#3a3f47',
-    flexDirection: 'row'
+    height: 100,
+    borderColor: '#3a3f47'
   },
 
   button: {
