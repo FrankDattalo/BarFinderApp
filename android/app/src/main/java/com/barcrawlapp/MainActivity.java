@@ -1,6 +1,8 @@
 package com.barcrawlapp;
 
 import com.facebook.react.ReactActivity;
+import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
+import com.burnweb.rnpermissions.RNPermissionsPackage; 
 
 public class MainActivity extends ReactActivity {
 
@@ -12,4 +14,11 @@ public class MainActivity extends ReactActivity {
     protected String getMainComponentName() {
         return "BarCrawlApp";
     }
+
+    @Override
+  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+      RNPermissionsPackage.onRequestPermissionsResult(requestCode, permissions, grantResults); // very important event callback
+      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+  }
+
 }

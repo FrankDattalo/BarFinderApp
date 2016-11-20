@@ -6,34 +6,39 @@ import {
   View,
   ScrollView,
   Button,
-  ToolbarAndroid,
   Alert,
   Navigator,
-  BackAndroid
+  BackAndroid,
+  StatusBar,
 } from 'react-native';
 
-import { barsFromLocation } from './backend-talker.js';
+import {
+  barsFromLocation,
+  increaseCount,
+  getOwnLatitudeAndLongitude
+} from './backend-talker.js';
 import { Col, Row, Grid } from "react-native-easy-grid";
-import BarDetails from "./BarDetails.js"
-var item = "";
+import BarDetails from "./BarDetails.js";
+import BarNoneHeader from './header.js';
 
-var SCREEN_WIDTH = require('Dimensions').get('window').width;
-var BaseConfig = Navigator.SceneConfigs.FloatFromRight;
-var backConfig = Navigator.SceneConfigs.FloatFromLeft;
+const CustomSceneConfig = Object.assign({},
+    Navigator.SceneConfigs.FloatFromRight, {
 
-var CustomSceneConfig = Object.assign({}, BaseConfig, {
-  // A very tighly wound spring will make this transition fast
   springTension: 100,
   springFriction: 1,
 });
 
-var CustomBackSceneConfig = Object.assign({}, backConfig, {
+const CustomBackSceneConfig = Object.assign({},
+    Navigator.SceneConfigs.FloatFromLeft, {
+
   springTension: -100,
   springFriction: 1,
 });
 
+var itemGlobal;
+var globalItemTotalPeople = 0;
 
-export class BarChoices extends React.Component {
+export class BarChoices extends Component {
 
   constructor(props) {
     super(props)
@@ -45,94 +50,109 @@ export class BarChoices extends React.Component {
 
   render() {
     mapped = this.state.list.map(item =>
-      <RowItem styles={styles.main} key={item.id} item={item} navigator = {this.props.navigator}/>)
+      <RowItem
+        styles={styles.main}
+        key={item.id}
+        item={item}
+        navigator={this.props.navigator}/>)
+
+    globalItemTotalPeople = 0
+
+    this.state.list.forEach(item => {
+      parsed = parseInt(item.person_count)
+      if(isNaN(parsed)) {
+        parsed = 0
+      }
+
+      globalItemTotalPeople += parsed
+    })
 
     return (
-      <View>
-        <ToolbarAndroid
-          title="Bar Nun"
-          titleColor="#f9f9f9"
-          style={{height: 50, backgroundColor: "#2454a0" }} />
-        <View>
-          <ScrollView>
-            { mapped }
-          </ScrollView>
-        </View>
-      </View>
+      <ScrollView>
+        { mapped }
+      </ScrollView>
     )
   }
 
-  componentDidMount() {
-    barsFromLocation(1, 1, (bars) => {
-      this.setState({
-        list: bars
+  listRetrieve() {
+    getOwnLatitudeAndLongitude(result => {
+      latitude = result.coords.latitude
+      longitude = result.coords.longitude
+
+      barsFromLocation(latitude, longitude, list => {
+        this.setState({ list })
+        increaseCount(latitude, longitude)
       })
     })
+  }
+
+  componentDidMount() {
+    this.listRetrieve()
   }
 }
 
 class RowItem extends Component {
   render() {
       return (
-          <Row style={styles.row}>
-            <Col size={3}>
-              <View>
-                <Text style={styles.header}>{this.props.item.name}</Text>
-                <Text>{this.props.item.address}</Text>
-              </View>
-            </Col>
-            <Col size={1}>
-              <View>
-                <Button
-                  title={"Info"}
-                  containerStyle={{backgroundColor: "#2454a0"}}
-                  onPress={this._handlePress.bind(this)}
-                />
-              </View>
-            </Col>
-          </Row>
+        <Row style={styles.row}>
+          <Col size={3}>
+            <View>
+              <Text style={styles.header}>{this.props.item.name}</Text>
+              <Text>{this.props.item.address}</Text>
+            </View>
+          </Col>
+          <Col size={1}>
+            <View style={styles.buttonColumn}>
+              <Button
+                title={"Info"}
+                color="#2454a0"
+                containerStyle={{backgroundColor: "#2454a0"}}
+                onPress={this.handlePress.bind(this)}
+              />
+            </View>
+          </Col>
+        </Row>
       )
   }
 
-  _handlePress(){
-    item = this.props.item
-    this.props.navigator.push({id:1,})
+  handlePress(){
+    itemGlobal = this.props.item
+    this.props.navigator.push({ id:1, })
   }
 }
 
-export class BarCrawlApp extends Component{
-  _renderScene(route, navigator) {
-    switch(route.id){
-      case 0:
-        return <BarChoices navigator={navigator} />
-      case 1:
-        return <BarDetails navigator={navigator} item = {item}/>
+export class BarCrawlApp extends Component {
+    renderScene(route, navigator) {
+      switch(route.id) {
+        case 0:
+          return <BarChoices navigator={navigator} />
+        case 1:
+          return <BarDetails navigator={navigator} item={itemGlobal} total={globalItemTotalPeople} />
+     }
    }
- }
 
- _configureScene(route) {
-    if(route.index===0){
-      return CustomBackSceneConfig;
-    }else{
-      return CustomSceneConfig;
-    }
-}
+   configureScene(route) {
+      if(route.index === 0){
+        return CustomBackSceneConfig;
+      }else{
+        return CustomSceneConfig;
+      }
+  }
 
-render() {
-  return (
+  render() {
+    return (
       <Navigator
-
-      initialRoute={{id:0,}}
-      // Calls the function that helps the navigator choose which component to show based on route id.
-      renderScene={this._renderScene}
-      configureScene={this._configureScene}
-      ref={(nav) => { navigator = nav;}} />
-  );
-}
-
+        initialRoute={{id:0,}}
+        // Calls the function that helps the navigator choose which component to show based on route id.
+        renderScene={this.renderScene}
+        configureScene={this.configureScene}
+        ref={ nav => navigator = nav } />
+    );
+  }
 }
 
 var navigator;
+
 BackAndroid.addEventListener('hardwareBackPress', () => {
   if(navigator && navigator.getCurrentRoutes().length > 1) {
     navigator.pop();
@@ -140,7 +160,6 @@ BackAndroid.addEventListener('hardwareBackPress', () => {
   }
   return false;
 });
-
 
 const styles = StyleSheet.create({
   main: {
@@ -156,6 +175,19 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderWidth: .75,
     margin: 10,
+    height: 100,
+    borderColor: '#3a3f47'
+  },
+
+  button: {
+    width: 100
+  },
+
+  buttonColumn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'column',
     borderColor: '#3a3f47',
     flexDirection: 'row'
   },
