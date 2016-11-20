@@ -6,7 +6,6 @@ import {
   View,
   ScrollView,
   Button,
-  ToolbarAndroid,
   Alert,
   Navigator,
   BackAndroid
@@ -14,22 +13,24 @@ import {
 
 import { barsFromLocation } from './backend-talker.js';
 import { Col, Row, Grid } from "react-native-easy-grid";
-import BarDetails from "./BarDetails.js"
+import BarDetails from "./BarDetails.js";
+import BarNoneHeader from './header.js';
 
-const SCREEN_WIDTH = require('Dimensions').get('window').width;
-const baseConfig = Navigator.SceneConfigs.FloatFromRight;
-const backConfig = Navigator.SceneConfigs.FloatFromLeft;
+const CustomSceneConfig = Object.assign({},
+    Navigator.SceneConfigs.FloatFromRight, {
 
-const CustomSceneConfig = Object.assign({}, baseConfig, {
-  // A very tighly wound spring will make this transition fast
   springTension: 100,
   springFriction: 1,
 });
 
-const CustomBackSceneConfig = Object.assign({}, backConfig, {
+const CustomBackSceneConfig = Object.assign({},
+    Navigator.SceneConfigs.FloatFromLeft, {
+
   springTension: -100,
   springFriction: 1,
 });
+
+var itemGlobal;
 
 export class BarChoices extends Component {
 
@@ -43,15 +44,15 @@ export class BarChoices extends Component {
 
   render() {
     mapped = this.state.list.map(item =>
-
-      <RowItem styles={styles.main} key={item.id} item={item} navigator = {this.props.navigator}/>)
+      <RowItem
+        styles={styles.main}
+        key={item.id}
+        item={item}
+        navigator={this.props.navigator}/>)
 
     return (
       <View>
-        <ToolbarAndroid
-          title="Bar Nun"
-          titleColor="#f9f9f9"
-          style={{height: 50, backgroundColor: "#2454a0" }} />
+        <BarNoneHeader />
         <View>
           <ScrollView>
             { mapped }
@@ -77,7 +78,7 @@ class RowItem extends Component {
             </View>
           </Col>
           <Col size={1}>
-            <View style={{}}>
+            <View style={styles.buttonColumn}>
               <Button
                 title={"Info"}
                 color="#2454a0"
@@ -91,18 +92,18 @@ class RowItem extends Component {
   }
 
   handlePress(){
-    barName = this.props.item.name
+    itemGlobal = this.props.item
     this.props.navigator.push({ id:1, })
   }
 }
 
 export class BarCrawlApp extends Component {
     renderScene(route, navigator) {
-      switch(route.id){
+      switch(route.id) {
         case 0:
           return <BarChoices navigator={navigator} />
         case 1:
-          return <BarDetails navigator={navigator} name = {barName}/>
+          return <BarDetails navigator={navigator} item={itemGlobal} />
      }
    }
 
