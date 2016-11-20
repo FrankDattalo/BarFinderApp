@@ -8,10 +8,15 @@ import {
   Button,
   Alert,
   Navigator,
-  BackAndroid
+  BackAndroid,
+  StatusBar,
 } from 'react-native';
 
-import { barsFromLocation, increaseCount } from './backend-talker.js';
+import {
+  barsFromLocation,
+  increaseCount,
+  getOwnLatitudeAndLongitude
+} from './backend-talker.js';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import BarDetails from "./BarDetails.js";
 import BarNoneHeader from './header.js';
@@ -63,22 +68,26 @@ export class BarChoices extends Component {
     })
 
     return (
-      <View>
-        <BarNoneHeader />
-        <View>
-          <ScrollView>
-            { mapped }
-          </ScrollView>
-        </View>
-      </View>
+      <ScrollView>
+        { mapped }
+      </ScrollView>
     )
   }
 
-  componentDidMount() {
-    barsFromLocation(1, 1, list => {
-      this.setState({ list })
-      increaseCount(1, 1)
+  listRetrieve() {
+    getOwnLatitudeAndLongitude(result => {
+      latitude = result.coords.latitude
+      longitude = result.coords.longitude
+
+      barsFromLocation(latitude, longitude, list => {
+        this.setState({ list })
+        increaseCount(latitude, longitude)
+      })
     })
+  }
+
+  componentDidMount() {
+    this.listRetrieve()
   }
 }
 
@@ -132,7 +141,7 @@ export class BarCrawlApp extends Component {
 
   render() {
     return (
-        <Navigator
+      <Navigator
         initialRoute={{id:0,}}
         // Calls the function that helps the navigator choose which component to show based on route id.
         renderScene={this.renderScene}

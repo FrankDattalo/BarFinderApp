@@ -31,134 +31,129 @@ export default class BarDetails extends Component {
     score = Math.floor((item.person_count / this.props.total) * 100)
 
     return (
-      <View>
-        <BarNoneHeader />
-        <View>
-          <ScrollView>
-            <Grid>
-              <Row>
-                <Col style={{backgroundColor: "#f9f9f9"}} >
-                  <Text style={{ fontSize: 35,
-                    borderColor: "#3a3f47",
-                    fontWeight: 'bold',
-                    margin: 5,
-                    textAlign: 'center' }}>{item.name}</Text>
-                  <Text style={{
-                    textAlign: 'center'
-                  }}>{item.address}</Text>
-                </Col>
-              </Row>
-              <Row>
+      <ScrollView>
+        <Grid>
+          <Row>
+            <Col style={{backgroundColor: "#f9f9f9"}} >
+              <Text style={{ fontSize: 35,
+                borderColor: "#3a3f47",
+                fontWeight: 'bold',
+                margin: 5,
+                textAlign: 'center' }}>{item.name}</Text>
+              <Text style={{
+                textAlign: 'center'
+              }}>{item.address}</Text>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Text style={{
+                textAlign: 'center',
+                color: "#ff8a38",
+                fontSize: 25,
+                margin: 10,
+                fontWeight: 'bold'
+              }}>{score} of 100</Text>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Text style={{
+                fontSize: 15,
+                fontStyle: 'italic',
+                textAlign: 'center',
+                textAlignVertical: 'center',
+                margin: 10,
+                marginBottom: 35,
+              }}>
+                {item.description}
+              </Text>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+
+              <Row style={{marginBottom: 30}}>
                 <Col>
-                  <Text style={{
-                    textAlign: 'center',
-                    color: "#ff8a38",
-                    fontSize: 25,
-                    margin: 10,
-                    fontWeight: 'bold'
-                  }}>{score} of 100</Text>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Text style={{
-                    fontSize: 15,
-                    fontStyle: 'italic',
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                    margin: 10,
-                    marginBottom: 35,
-                  }}>
-                    {item.description}
-                  </Text>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-
-                  <Row style={{marginBottom: 30}}>
-                    <Col>
-                      <Row>
-                        <Col>
-                          <Text style={{fontWeight: 'bold', fontSize: 20, textAlign: 'right' }}>Rating</Text>
-                        </Col>
-                        <Col>
-                          <Text style={{ textAlignVertical: 'center', fontSize: 20 }}> {item.rating} of 100</Text>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col style={{margin: 5}}>
-                          <Button color="#2454a0"
-                            title="-" />
-                        </Col>
-                        <Col style={{margin: 5}}>
-                          <Button color="#2454a0"
-                            title="+" />
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-
-                  <Row style={{marginBottom: 30}}>
-                    <Col>
-                      <Row>
-                        <Col>
-                          <Text style={{fontWeight: 'bold', fontSize: 20, textAlign: 'right' }}>Loudness</Text>
-                        </Col>
-                        <Col>
-                          <Text style={{ textAlignVertical: 'center', fontSize: 20 }}> {item.loudness} of 100</Text>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col style={{margin: 5}}>
-                          <Button color="#2454a0"
-                            title="-" />
-                        </Col>
-                        <Col style={{margin: 5}}>
-                          <Button color="#2454a0"
-                            title="+" />
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-
-                  <Row style={{marginBottom: 30}}>
-                    <Col>
-                      <Row>
-                        <Col>
-                          <Text style={{fontWeight: 'bold', fontSize: 20, textAlign: 'right' }}>Crowdedness</Text>
-                        </Col>
-                        <Col>
-                          <Text style={{ textAlignVertical: 'center', fontSize: 20 }}> {item.crowdedness} of 100</Text>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col style={{margin: 5}}>
-                          <Button
-                            color="#2454a0"
-                            title="-" />
-                        </Col>
-                        <Col style={{margin: 5}}>
-                          <Button
-                            color="#2454a0"
-                            title="+" />
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-
                   <Row>
-                    <Col style={{margin: 5 }}>
-                      <Button color="#2454a0" title="Rate" />
+                    <Col>
+                      <Text style={{fontWeight: 'bold', fontSize: 20, textAlign: 'right' }}>Rating</Text>
+                    </Col>
+                    <Col>
+                      <Text style={{ textAlignVertical: 'center', fontSize: 20 }}> {item.rating} of 100</Text>
                     </Col>
                   </Row>
-
+                  <Row>
+                    <Col style={{margin: 5}}>
+                      <Button color="#2454a0"
+                        title="-" />
+                    </Col>
+                    <Col style={{margin: 5}}>
+                      <Button color="#2454a0"
+                        title="+" />
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
-            </Grid>
-          </ScrollView>
-        </View>
-      </View>
+
+              <Row style={{marginBottom: 30}}>
+                <Col>
+                  <Row>
+                    <Col>
+                      <Text style={{fontWeight: 'bold', fontSize: 20, textAlign: 'right' }}>Loudness</Text>
+                    </Col>
+                    <Col>
+                      <Text style={{ textAlignVertical: 'center', fontSize: 20 }}> {item.loudness} of 100</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col style={{margin: 5}}>
+                      <Button color="#2454a0"
+                        title="-" />
+                    </Col>
+                    <Col style={{margin: 5}}>
+                      <Button color="#2454a0"
+                        title="+" />
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+
+              <Row style={{marginBottom: 30}}>
+                <Col>
+                  <Row>
+                    <Col>
+                      <Text style={{fontWeight: 'bold', fontSize: 20, textAlign: 'right' }}>Crowdedness</Text>
+                    </Col>
+                    <Col>
+                      <Text style={{ textAlignVertical: 'center', fontSize: 20 }}> {item.crowdedness} of 100</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col style={{margin: 5}}>
+                      <Button
+                        color="#2454a0"
+                        title="-" />
+                    </Col>
+                    <Col style={{margin: 5}}>
+                      <Button
+                        color="#2454a0"
+                        title="+" />
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col style={{margin: 5 }}>
+                  <Button color="#2454a0" title="Rate" />
+                </Col>
+              </Row>
+
+            </Col>
+          </Row>
+        </Grid>
+      </ScrollView>
     )
   }
 }

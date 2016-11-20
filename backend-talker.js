@@ -1,4 +1,23 @@
 const API_LOCATION = 'https://barnonesexyapi.herokuapp.com/';
+import {checkPermission} from 'react-native-android-permissions';
+
+export function getOwnLatitudeAndLongitude(callback) {
+  checkPermission("android.permission.ACCESS_FINE_LOCATION").then((result) => {
+
+      navigator.geolocation.getCurrentPosition(data => {
+          callback(data)
+      }, err => {
+        console.error(err)
+      })
+
+    }, (result) => {
+      console.error(result);
+    });
+
+    navigator.geolocation.watchPosition(pos => {
+      callback(pos)
+    })
+}
 
 export function api(query, callback) {
   return fetch(API_LOCATION + query)
