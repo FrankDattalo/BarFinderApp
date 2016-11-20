@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -13,13 +7,31 @@ import {
   ScrollView,
   Button,
   ToolbarAndroid,
-  Alert
+  Alert,
+  Navigator,
+  BackAndroid
 } from 'react-native';
 
 import { barsFromLocation } from './backend-talker.js';
 import { Col, Row, Grid } from "react-native-easy-grid";
+import BarDetails from "./BarDetails.js"
 
-export default class BarCrawlApp extends Component {
+const SCREEN_WIDTH = require('Dimensions').get('window').width;
+const baseConfig = Navigator.SceneConfigs.FloatFromRight;
+const backConfig = Navigator.SceneConfigs.FloatFromLeft;
+
+const CustomSceneConfig = Object.assign({}, baseConfig, {
+  // A very tighly wound spring will make this transition fast
+  springTension: 100,
+  springFriction: 1,
+});
+
+const CustomBackSceneConfig = Object.assign({}, backConfig, {
+  springTension: -100,
+  springFriction: 1,
+});
+
+export class BarChoices extends Component {
 
   constructor(props) {
     super(props)
@@ -31,7 +43,8 @@ export default class BarCrawlApp extends Component {
 
   render() {
     mapped = this.state.list.map(item =>
-      <RowItem styles={styles.main} key={item.id} item={item} />)
+
+      <RowItem styles={styles.main} key={item.id} item={item} navigator = {this.props.navigator}/>)
 
     return (
       <View>
@@ -40,11 +53,9 @@ export default class BarCrawlApp extends Component {
           titleColor="#f9f9f9"
           style={{height: 50, backgroundColor: "#2454a0" }} />
         <View>
-          <Grid>
-            <ScrollView>
-              {mapped}
-            </ScrollView>
-          </Grid>
+          <ScrollView>
+            { mapped }
+          </ScrollView>
         </View>
       </View>
     )
@@ -58,22 +69,72 @@ export default class BarCrawlApp extends Component {
 class RowItem extends Component {
   render() {
       return (
-          <Row>
-            <Col size={3}>
+        <Row style={styles.row}>
+          <Col size={3}>
+            <View>
               <Text style={styles.header}>{this.props.item.name}</Text>
               <Text>{this.props.item.address}</Text>
-            </Col>
-            <Col size={1} >
+            </View>
+          </Col>
+          <Col size={1}>
+            <View>
               <Button
-                title="Info"
-                color="#2454a0"
-                style={styles.button}
-                onPress={() => Alert.alert("button press") } />
-            </Col>
-          </Row>
+                title={"Info"}
+                containerStyle={{backgroundColor: "#2454a0"}}
+                onPress={this.handlePress.bind(this)}
+              />
+            </View>
+          </Col>
+        </Row>
       )
   }
+
+
+  handlePress(){
+    barName = this.props.item.name
+    this.props.navigator.push({id:1,})
+  }
 }
+
+export class BarCrawlApp extends Component {
+    renderScene(route, navigator) {
+      switch(route.id){
+        case 0:
+          return <BarChoices navigator={navigator} />
+        case 1:
+          return <BarDetails navigator={navigator} name = {barName}/>
+     }
+   }
+
+   configureScene(route) {
+      if(route.index===0){
+        return CustomBackSceneConfig;
+      }else{
+        return CustomSceneConfig;
+      }
+  }
+
+  render() {
+    return (
+        <Navigator
+        initialRoute={{id:0,}}
+        // Calls the function that helps the navigator choose which component to show based on route id.
+        renderScene={this.renderScene}
+        configureScene={this.configureScene}
+        ref={ nav => navigator = nav } />
+    );
+  }
+}
+
+var navigator;
+
+BackAndroid.addEventListener('hardwareBackPress', () => {
+  if(navigator && navigator.getCurrentRoutes().length > 1) {
+    navigator.pop();
+    return true;
+  }
+  return false;
+});
 
 const styles = StyleSheet.create({
   main: {
@@ -102,6 +163,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'column',
+    borderColor: '#3a3f47',
+    flexDirection: 'row'
   },
 
   header: {
