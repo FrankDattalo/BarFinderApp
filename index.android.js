@@ -49,11 +49,7 @@ export default class BarCrawlApp extends React.Component {
   }
 
   componentDidMount() {
-    barsFromLocation(1, 1, (bars) => {
-      this.setState({
-        list: bars
-      })
-    })
+    barsFromLocation(1, 1, (list) => this.setState({ list }) )
   }
 }
 
@@ -67,12 +63,14 @@ class RowItem extends Component {
                 <Text>{this.props.item.address}</Text>
               </View>
             </Col>
-            <Col size={1}>
+            <Col size={1} style={styles.buttonColumn}>
               <View>
                 <Button
-                  title={"Info"}
-                  containerStyle={{backgroundColor: "#2454a0"}}
-                  onPress={(x) => Alert.alert(x) }
+                  title="Info"
+                  color="#2454a0"
+                  backgroundColor="#2454a0"
+                  style={styles.button}
+                  onPress={() => Alert.alert("button press") }
                 />
               </View>
             </Col>
@@ -97,6 +95,17 @@ const styles = StyleSheet.create({
     margin: 10,
     borderColor: '#3a3f47',
     flexDirection: 'row'
+  },
+
+  button: {
+    width: 100
+  },
+
+  buttonColumn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'column',
   },
 
   header: {
